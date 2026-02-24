@@ -1,0 +1,212 @@
+# Model Configuration
+
+# ISTA-LSTM Model Parameters
+ista_lstm:
+  # Architecture
+  hidden_size: 64
+  num_layers: 2
+  dropout: 0.3
+  attention_dim: 32
+  
+  # Training
+  learning_rate: 0.001
+  batch_size: 32
+  epochs: 100
+  early_stopping_patience: 15
+  
+  # Regularization
+  lambda_att: 0.01  # Attention entropy regularization
+  lambda_temp: 0.01  # Temporal smoothness regularization
+  
+  # Uncertainty Quantification
+  mc_dropout_iterations: 100
+  dropout_rate_inference: 0.3
+
+# Random Forest Parameters
+random_forest:
+  # Hyperparameter search space (Optuna)
+  n_estimators:
+    min: 50
+    max: 500
+    step: 50
+  max_depth:
+    min: 5
+    max: 50
+    step: 5
+  min_samples_split:
+    min: 2
+    max: 20
+    step: 2
+  min_samples_leaf:
+    min: 1
+    max: 10
+    step: 1
+  
+  # Cross-validation
+  cv_folds: 5
+  optuna_trials: 100
+
+# XGBoost Parameters
+xgboost:
+  # Hyperparameter search space (Optuna)
+  n_estimators:
+    min: 50
+    max: 500
+    step: 50
+  max_depth:
+    min: 3
+    max: 15
+    step: 1
+  learning_rate:
+    min: 0.01
+    max: 0.3
+    log: true
+  subsample:
+    min: 0.6
+    max: 1.0
+    step: 0.1
+  colsample_bytree:
+    min: 0.6
+    max: 1.0
+    step: 0.1
+  reg_alpha:
+    min: 0.0
+    max: 1.0
+    step: 0.1
+  reg_lambda:
+    min: 0.0
+    max: 1.0
+    step: 0.1
+  
+  # Cross-validation
+  cv_folds: 5
+  optuna_trials: 100
+
+# DNN Parameters
+dnn:
+  # Architecture
+  hidden_layers: [128, 64, 32]
+  dropout: 0.3
+  activation: 'relu'
+  
+  # Training
+  learning_rate: 0.001
+  batch_size: 32
+  epochs: 100
+  early_stopping_patience: 15
+
+# Data Split Configuration
+data_split:
+  # Split methods: 'random' or 'station'
+  method: 'random'  # default for NH3-N and TP
+  # method: 'station'  # use for CODMn
+  
+  train_ratio: 0.8
+  val_ratio: 0.2
+  
+  # Random seeds for multi-seed experiments
+  seeds: [111, 222, 333, 444, 555, 666, 777, 888, 999, 1110]
+
+# Feature Engineering
+feature_engineering:
+  # Spectral transformations
+  transformations:
+    - 'log'
+    - 'sqrt'
+    - 'square'
+    - 'reciprocal'
+    - 'normalized_exp'
+    - 'abs'
+    - 'tanh'
+    - 'sigmoid'
+    - 'relu'
+    - 'cube'
+    - 'cbrt'
+    - 'arctan'
+  
+  # Feature selection methods
+  feature_selection:
+    - method: 'random_forest'
+      n_features: 100
+      threshold: 0.01
+    - method: 'sfla'  # Shuffled Frog Leaping Algorithm
+      n_features: 100
+      population_size: 20
+      iterations: 50
+    - method: 'vif'  # Variance Inflation Factor
+      n_top: 100
+      vif_threshold: 10
+  
+  # Vegetation reference
+  vegetation:
+    buffer_radius: 1000  # meters
+    ndvi_threshold: 0.3
+  
+  # Temporal anomaly
+  temporal_anomaly:
+    window_days: 180  # for sliding window MAD
+
+# Water Quality Parameters
+parameters:
+  CODMn:
+    unit: 'mg/L'
+    display_name: 'COD$_{\mathrm{Mn}}$'
+    chinese_name: '高锰酸盐指数'
+    outlier_threshold: 3.5
+  
+  NH3N:
+    unit: 'mg/L'
+    display_name: 'NH$_3$-N'
+    chinese_name: '氨氮'
+    outlier_threshold: 3.5
+  
+  TP:
+    unit: 'mg/L'
+    display_name: 'TP'
+    chinese_name: '总磷'
+    outlier_threshold: 3.5
+
+# Evaluation Metrics
+metrics:
+  - 'R2'
+  - 'MAE'
+  - 'NMAE'
+  - 'RMSE'
+  - 'MAPE'
+
+# Visualization
+visualization:
+  # Figure size (inches)
+  figure_size: [12, 8]
+  
+  # DPI for saving
+  dpi: 300
+  
+  # File formats
+  formats: ['png', 'pdf', 'svg']
+  
+  # Color schemes
+  colors:
+    model:
+      RF: '#1f77b4'
+      XGBoost: '#ff7f0e'
+      DNN: '#2ca02c'
+      ISTA-LSTM: '#d62728'
+    
+    parameter:
+      CODMn: '#2ca02c'
+      NH3N: '#1f77b4'
+      TP: '#ff7f0e'
+
+# Output Paths
+output:
+  results_dir: 'results'
+  figures_dir: 'results/figures'
+  models_dir: 'results/models'
+  logs_dir: 'results/logs'
+
+# Logging
+logging:
+  level: 'INFO'
+  format: '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+  file: 'results/logs/training.log'
