@@ -98,19 +98,6 @@ python src/visualization/plot_shap_band.py
 python src/visualization/plot_shap_detailed.py
 ```
 
-## Data
-
-The `data/` directory contains:
-
-- **Raw data**: Water quality measurements and Sentinel-2 spectral data from 32 monitoring stations (2020-2025)
-- **Processed data**: Feature-engineered datasets ready for model training
-
-### Data Description
-
-- `3-水质数据_processed.csv`: Processed water quality measurements (CODMn, NH3-N, TP)
-- `52-spectral_water_quality.csv`: Merged spectral-water quality dataset
-- `cgx_spectral_data.csv`: Independent validation data from Changguangxi Creek
-
 ## Model Architecture
 
 The ISTA-LSTM model includes:
